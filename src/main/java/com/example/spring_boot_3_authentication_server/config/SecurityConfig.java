@@ -15,6 +15,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.example.spring_boot_3_authentication_server.filters.JwtAuthenticationFilter;
+import com.example.spring_boot_3_authentication_server.services.UserService;
+
 import lombok.RequiredArgsConstructor;
 
 @Configuration
@@ -39,6 +42,13 @@ public class SecurityConfig {
 		return config.getAuthenticationManager();
 	}
 	
+	/**
+	 * Ce sont les endpoints
+	 * 
+	 * SessionManagement -> 
+	 * 
+	 * Http request authorize
+	 * */
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
 		http.csrf(csrf -> csrf.disable())
@@ -50,7 +60,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.GET, "/api/v1/test/**").permitAll()
 					.anyRequest().authenticated()
 			)
-			.authenticationProvider(authenticationProvider()).addFilter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+			.authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		return http.build();
 	}
